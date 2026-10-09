@@ -1,0 +1,88 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Coffee shop product catalog item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the product" },
+        "name": { "type": "string", "description": "Name of the coffee shop item" },
+        "category": { "type": "string", "enum": ["minuman", "makanan", "snack"], "description": "Main category" },
+        "subcategory": { "type": "string", "description": "Subcategory such as coffee or non-coffee" },
+        "price": { "type": "number", "description": "Price in IDR" },
+        "stock": { "type": "number", "description": "Current inventory stock count" },
+        "description": { "type": "string", "description": "Product detailed description" },
+        "imageUrl": { "type": "string", "description": "Image URL of the product" },
+        "rating": { "type": "number", "description": "Average customer rating" },
+        "isPopular": { "type": "boolean", "description": "Whether item is featured or best seller" },
+        "badge": { "type": "string", "description": "Badge label such as Signature or Best Seller" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" },
+        "updatedAt": { "type": "string", "description": "ISO timestamp of last update" }
+      },
+      "required": ["name", "category", "price", "stock"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order details including cart items and payment status",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique order ID" },
+        "orderNumber": { "type": "string", "description": "Human-readable order code" },
+        "customerName": { "type": "string", "description": "Customer full name" },
+        "customerPhone": { "type": "string", "description": "Customer phone/WhatsApp number" },
+        "customerEmail": { "type": "string", "description": "Customer email address" },
+        "orderType": { "type": "string", "enum": ["dine-in", "takeaway", "delivery"], "description": "Order delivery method" },
+        "tableNumber": { "type": "string", "description": "Table number if dine-in" },
+        "deliveryAddress": { "type": "string", "description": "Address if delivery" },
+        "notes": { "type": "string", "description": "Special request or note from customer" },
+        "items": { "type": "array", "description": "List of ordered items with quantities and subtotal" },
+        "totalQuantity": { "type": "number", "description": "Total quantity of items" },
+        "subtotal": { "type": "number", "description": "Subtotal before fees and discounts" },
+        "tax": { "type": "number", "description": "Tax amount" },
+        "deliveryFee": { "type": "number", "description": "Delivery fee" },
+        "totalAmount": { "type": "number", "description": "Final payable amount in IDR" },
+        "paymentMethod": { "type": "string", "description": "Payment channel (QRIS, BCA, Mandiri, Tunai)" },
+        "paymentStatus": { "type": "string", "enum": ["unpaid", "pending_approval", "approved", "rejected"], "description": "Payment verification state" },
+        "orderStatus": { "type": "string", "enum": ["menunggu_pembayaran", "menunggu_approval", "diproses", "siap_diambil", "selesai", "dibatalkan"], "description": "Fulfillment status" },
+        "paymentProofUrl": { "type": "string", "description": "Uploaded receipt image or URL" },
+        "paymentProofUploadedAt": { "type": "string", "description": "ISO timestamp when proof was submitted" },
+        "approvalNotes": { "type": "string", "description": "Admin note regarding payment approval" },
+        "approvedBy": { "type": "string", "description": "Admin identifier who reviewed payment" },
+        "approvedAt": { "type": "string", "description": "Timestamp of payment review" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Update timestamp" }
+      },
+      "required": ["orderNumber", "customerName", "customerPhone", "totalAmount", "orderStatus", "paymentStatus"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Customer record aggregated across store transactions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Customer identifier (phone or uuid)" },
+        "name": { "type": "string", "description": "Customer name" },
+        "phone": { "type": "string", "description": "Customer phone number" },
+        "email": { "type": "string", "description": "Customer email address" },
+        "totalOrders": { "type": "number", "description": "Total number of orders completed" },
+        "totalSpent": { "type": "number", "description": "Total money spent in IDR" },
+        "lastOrderAt": { "type": "string", "description": "Date of latest order" },
+        "createdAt": { "type": "string", "description": "Record creation date" }
+      },
+      "required": ["name", "phone"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Products available in the coffee shop store"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Customer orders placed in the coffee shop"
+    },
+    "/customers/{customerId}": {
+      "schema": { "$ref": "#/entities/Customer" },
+      "description": "Customer CRM records"
+    }
+  }
+}
